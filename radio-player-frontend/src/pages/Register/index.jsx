@@ -1,7 +1,45 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import withRouter from "../../withRouter";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import RestClient from "../../RestAPI/RestClient";
+import Notification from "../../RestAPI/Notification";
+import AppUrl from "../../RestAPI/AppUrl";
 
-function Register() {
+function Register({ navigate }) {
+  const handleSubmit = (values, { resetForm, setSubmitting }) => {
+    RestClient.postRequest(AppUrl.register, values)
+      .then((res) => {
+        const status = res.status;
+        const result = res.data;
+        if (status === 201) {
+          resetForm();
+          setSubmitting(false);
+          Notification.success(result);
+          console.log(values);
+
+          navigate("/login");
+          console.log(values);
+        } else {
+          if (status === 422) {
+            Notification.error(result);
+            setSubmitting(false);
+          } else {
+            Notification.error(result);
+            setSubmitting(false);
+          }
+        }
+      })
+      .catch((err) => {
+        Notification.error({
+          title: "Hata",
+          message: "Bir hata oluştu. Lütfen daha sonratekrar deneyiniz.",
+        });
+        setSubmitting(false);
+      });
+  };
+
   return (
     <>
       <div className="container">
@@ -17,40 +55,122 @@ function Register() {
                           Radio Hesap Oluştur
                         </h1>
                       </div>
-                      <form className="user">
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            className="form-control form-control-user"
-                            placeholder="Adınız Soyadınız"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            className="form-control form-control-user"
-                            placeholder="Email Adresiniz"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <input
-                            type="password"
-                            className="form-control form-control-user"
-                            placeholder="Şifrenizi Giriniz"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <input
-                            type="password"
-                            className="form-control form-control-user"
-                            placeholder="Şifre Tekrar"
-                          />
-                        </div>
-                        <button className="btn btn-primary btn-user btn-block">
-                          Hesap Oluştur
-                        </button>
-                        <hr />
-                      </form>
+
+                      <Formik
+                        initialValues={{
+                          name: "",
+                          email: "",
+                          password: "",
+                          confirmPassword: "",
+                        }}
+                        onSubmit={handleSubmit}
+                        validationSchema={Yup.object().shape({
+                          name: Yup.string().required(
+                            "Adınız Soyadınız alanı boş bırakılamaz"
+                          ),
+                          email: Yup.string()
+                            .email("Geçerli bir email adresi giriniz")
+                            .required("Email alanı boş bırakılamaz"),
+                          password: Yup.string()
+                            .required("Şifre alanı boş bırakılamaz")
+                            .min(8, "Şifreniz en az 8 karakter olmalıdır")
+                            .max(16, "Şifreniz en fazla 16 karakter olmalıdır"),
+                          password_confirmation: Yup.string()
+                            .required("Şifre tekrar alanı boş bırakılamaz")
+                            .oneOf(
+                              [Yup.ref("password"), null],
+                              "Şifreler eşleşmiyor"
+                            ),
+                        })}
+                      >
+                        {({
+                          touched,
+                          values,
+                          errors,
+                          handleBlur,
+                          handleChange,
+                          handleSubmit,
+                          isValid,
+                          isSubmitting,
+                        }) => (
+                          <form className="user">
+                            <div className="form-group">
+                              <input
+                                name="name"
+                                onBlur={handleBlur}
+                                onChange={handleChange("name")}
+                                value={values.name || ""}
+                                type="text"
+                                className="form-control form-control-user"
+                                placeholder="Adınız Soyadınız"
+                              />
+                              {touched.name && errors.name && (
+                                <small className="text-danger">
+                                  {errors.name}
+                                </small>
+                              )}
+                            </div>
+                            <div className="form-group">
+                              <input
+                                name="email"
+                                onBlur={handleBlur}
+                                onChange={handleChange("email")}
+                                value={values.email || ""}
+                                type="text"
+                                className="form-control form-control-user"
+                                placeholder="Email Adresiniz"
+                              />
+                              {touched.email && errors.email && (
+                                <small className="text-danger">
+                                  {errors.email}
+                                </small>
+                              )}
+                            </div>
+                            <div className="form-group">
+                              <input
+                                name="password"
+                                onBlur={handleBlur}
+                                onChange={handleChange("password")}
+                                value={values.password || ""}
+                                type="password"
+                                className="form-control form-control-user"
+                                placeholder="Şifrenizi Giriniz"
+                              />
+                              {touched.password && errors.password && (
+                                <small className="text-danger">
+                                  {errors.password}
+                                </small>
+                              )}
+                            </div>
+                            <div className="form-group">
+                              <input
+                                name="password_confirmation"
+                                onBlur={handleBlur}
+                                onChange={handleChange("password_confirmation")}
+                                value={values.password_confirmation || ""}
+                                type="password"
+                                className="form-control form-control-user"
+                                placeholder="Şifre Tekrar"
+                              />
+                              {touched.password_confirmation &&
+                                errors.password_confirmation && (
+                                  <small className="text-danger">
+                                    {errors.password_confirmation}
+                                  </small>
+                                )}
+                            </div>
+                            <button
+                              disabled={isSubmitting || !isValid}
+                              onClick={handleSubmit}
+                              type="submit"
+                              className="btn btn-primary btn-user btn-block"
+                            >
+                              Hesap Oluştur
+                            </button>
+                            <hr />
+                          </form>
+                        )}
+                      </Formik>
 
                       <div className="text-center">
                         <Link className="small" to={"/login"}>
@@ -69,4 +189,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default withRouter(Register);
