@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import withRouter from "../../../withRouter";
 
-const Sidebar = () => {
+const Sidebar = ({ location }) => {
   return (
     <>
       <ul
@@ -17,7 +18,7 @@ const Sidebar = () => {
 
         <hr className="sidebar-divider my-0" />
 
-        <li className="nav-item">
+        <li className={`nav-item ${location.pathname === "/" ? "active" : ""}`}>
           <Link className="nav-link" to={"/"}>
             <i className="fas fa-fw fa-home"></i>
             <span>Anasayfa</span>
@@ -26,13 +27,16 @@ const Sidebar = () => {
 
         <hr className="sidebar-divider" />
 
-        <li className="nav-item">
+        <li
+          className={`nav-item ${
+            location.pathname === "/favourite" ? "active" : ""
+          }`}
+        >
           <Link className="nav-link" to={"/favourite"}>
             <i className="fas fa-fw fa-heart"></i>
             <span>Favoriler</span>
           </Link>
         </li>
-
         <hr className="sidebar-divider d-none d-md-block" />
 
         <div className="text-center d-none d-md-inline">
@@ -46,4 +50,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default withRouter(Sidebar);

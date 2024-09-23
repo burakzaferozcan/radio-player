@@ -16,6 +16,13 @@ const Favourite = () => {
                 <h1 className="h3 mb-0 text-gray-800">Favori Radyo Listesi</h1>
               </div>
               <div className="row">
+                <div className="col-md-12 my-3">
+                  <input
+                    type="text"
+                    placeholder="Radyo İsmi Giriniz"
+                    className="form-control"
+                  />
+                </div>
                 <div className="col-xl-3 col-md-6 mb-4">
                   <div className="card shadow h-100 py-2">
                     <div className="card-body">
