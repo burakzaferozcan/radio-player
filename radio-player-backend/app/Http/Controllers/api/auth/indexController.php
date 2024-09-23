@@ -14,7 +14,7 @@ class indexController extends BaseController
 {
     public function login(LoginRequest $request){
         $data =$request->except("_token");
-        $client=User::where("email",$request->$data["email"])->first();
+        $client=User::where("email",$data["email"])->first();
 
         if($client&&Hash::check($data["password"],$client->password)){
             $token=$client->createToken("radio")->accessToken;
