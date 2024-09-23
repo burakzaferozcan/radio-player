@@ -46,4 +46,37 @@ class indexController extends BaseController
 
         return parent::success("Kullanıcı bilgileri getirildi.",["user"=>$client]);
     }
+
+    public function update(Request $request){
+        $client=$request->user();
+        $data=$request->except("_token");
+        $update=User::where("id",+$client->id)->update([
+            "url"=> $data["url"],
+            "channel"=> $data["channel"],
+        ]);
+        if($update){
+            $token=$client->createToken("radio")->accessToken;
+            return response()->json([
+                "success"=> true,
+                "title"=> "Başarılı",
+                "text"=> "İşlem başarılı",
+                "isLoggedIn"=> true,
+                "data"=>[
+                    "id"=> $client->id,
+                    "name"=> $client->name,
+                    "email"=> $client->email,
+                    "url"=> $data["url"],
+                    "channel"=> $data["channel"],
+                    "token_type"=> "Bearer",
+                    "token"=> $token,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                "success"=> false,
+                "title"=> "Hata",
+                "text"=> "İşlem Başarısız",
+            ]);
+        }
+    }
 }
