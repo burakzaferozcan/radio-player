@@ -106,4 +106,11 @@ class indexController extends BaseController
         }
 
     }
+
+    public function logout(Request $request){
+        $client=$request->user();
+        $token=$client->token();
+        $token->revoke();
+        return parent::success("Kullanıcı çıkış işlemi başarılı.");
+    }
 }
