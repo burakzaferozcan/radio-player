@@ -4,13 +4,15 @@ namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\api\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\api\auth\LoginRequest;
+use App\Http\Requests\api\auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class indexController extends BaseController
 {
-    public function login(Request $request){
+    public function login(LoginRequest $request){
         $data =$request->except("_token");
         $client=User::where("email",$request->$data["email"])->first();
 
@@ -30,7 +32,7 @@ class indexController extends BaseController
         }
     }
 
-    public function register(Request $request){
+    public function register(RegisterRequest $request){
         $data=$request->except("_token","password_confirmation");
         $data["password"] = Hash::make($data["password"]);
         $create=User::create($data);
