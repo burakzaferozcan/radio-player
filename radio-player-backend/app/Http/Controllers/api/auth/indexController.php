@@ -30,5 +30,14 @@ class indexController extends BaseController
         }
     }
 
-
+    public function register(Request $request){
+        $data=$request->except("_token","password_confirmation");
+        $data["password"] = Hash::make($data["password"]);
+        $create=User::create($data);
+        if( $create ){
+            return parent::success("Kullanıcı kayıt işlemi başarılı",[$create],201);
+        }else{
+            return parent::error("Kullanıcı Kayıt işleminde hata oluştu",404);
+        }
+    }
 }
