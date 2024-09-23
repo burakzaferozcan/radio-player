@@ -40,4 +40,10 @@ class indexController extends BaseController
             return parent::error("Kullanıcı Kayıt işleminde hata oluştu",404);
         }
     }
+
+    public function profile(Request $request){
+        $client=$request->user();
+
+        return parent::success("Kullanıcı bilgileri getirildi.",["user"=>$client]);
+    }
 }
