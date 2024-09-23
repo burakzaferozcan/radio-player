@@ -4,7 +4,7 @@ class Notification {
   static success = (data) => {
     return Swal.fire({
       title: data.title,
-      text: data.text,
+      text: data.message,
       icon: "success",
       confirmButtonText: "OK",
     });
@@ -13,7 +13,7 @@ class Notification {
   static error = (data) => {
     return Swal.fire({
       title: data.title,
-      text: data.text,
+      text: data.message,
       icon: "error",
       confirmButtonText: "OK",
     });
