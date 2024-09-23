@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('url')->nullable()->comment("Radyo url bilgisini tutacağız.");
+            $table->string('channel')->nullable()->comment("Radyo adını tutacağız.");
+
             $table->rememberToken();
             $table->timestamps();
         });
