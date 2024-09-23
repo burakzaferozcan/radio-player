@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import withRouter from "../../../withRouter";
 
 const Sidebar = ({ location }) => {
+  const [toggled, setToggled] = useState(false);
+  const handleToggle = () => {
+    setToggled(!toggled);
+  };
   return (
     <>
       <ul
-        className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        className={`navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ${
+          toggled ? "toggled" : ""
+        }`}
         id="accordionSidebar"
       >
         <a
           className="sidebar-brand d-flex align-items-center justify-content-center"
           href="index.html"
         >
-          <div className="sidebar-brand-text mx-3">mRadio</div>
+          <div className="sidebar-brand-text mx-3">Radio</div>
         </a>
 
         <hr className="sidebar-divider my-0" />
@@ -43,6 +49,7 @@ const Sidebar = ({ location }) => {
           <button
             className="rounded-circle border-0"
             id="sidebarToggle"
+            onClick={handleToggle}
           ></button>
         </div>
       </ul>
