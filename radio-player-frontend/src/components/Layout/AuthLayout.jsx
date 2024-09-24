@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import RestClient from "../../RestAPI/RestClient";
 import AppUrl from "../../RestAPI/AppUrl";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "../../withRouter";
+import withRouter from "../../withRouter";
 
 class AuthLayout extends Component {
   constructor(props) {
@@ -58,4 +58,4 @@ class AuthLayout extends Component {
     return <>{this.props.children}</>;
   }
 }
-export default withRouter(inject("authStore")(observer(AuthLayout)));
+export default withRouter(inject("AuthStore")(observer(AuthLayout)));
