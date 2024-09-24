@@ -25,10 +25,10 @@ class indexController extends BaseController
                 "url"=> $client->url,
                 "channel"=> $client->channel,
                 "token_type"=> "Bearer",
-                "token"=> $token,
+                "access_token"=> $token,
             ]);
         }else{
-            return parent::error("Kullanıcı bilgileri hatalı",404);
+            return parent::error("Kullanıcı bilgileri hatalı",401);
         }
     }
 
@@ -70,7 +70,7 @@ class indexController extends BaseController
                     "url"=> $data["url"],
                     "channel"=> $data["channel"],
                     "token_type"=> "Bearer",
-                    "token"=> $token,
+                    "access_token"=> $token,
                 ],
             ]);
         }else{
@@ -96,7 +96,7 @@ class indexController extends BaseController
                     "url"=> $client->url,
                     "channel"=> $client->channel,
                     "token_type"=> "Bearer",
-                    "token"=> $token,
+                    "access_token"=> $token,
                 ]
             ]);
 

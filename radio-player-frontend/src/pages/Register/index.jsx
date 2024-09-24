@@ -34,7 +34,7 @@ function Register({ navigate }) {
       .catch((err) => {
         Notification.error({
           title: "Hata",
-          message: "Bir hata oluştu. Lütfen daha sonratekrar deneyiniz.",
+          message: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
         });
         setSubmitting(false);
       });
