@@ -1,26 +1,33 @@
-import React, { useEffect } from "react";
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import withRouter from "../../withRouter";
-import useAuthStore from "../../store/AuthStore";
 import RestClient from "../../RestAPI/RestClient";
 import AppUrl from "../../RestAPI/AppUrl";
-function Logout({ navigate }) {
-  const AuthStore = useAuthStore();
-  useEffect(() => {
-    doLogout();
-  }, []);
 
-  const doLogout = () => {
-    AuthStore.getToken();
+class Logout extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.doLogout();
+  }
+
+  doLogout = () => {
+    const { navigate } = this.props;
+    this.props.AuthStore.getToken();
     const token =
-      AuthStore.appState !== null ? AuthStore.appState.user.access_token : null;
+      this.props.AuthStore.appState !== null
+        ? this.props.AuthStore.appState.user.access_token
+        : null;
+
     RestClient.getRequest(AppUrl.logout, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: "Bearer " + token,
       },
     })
       .then((res) => {
-        console.log(res);
-        AuthStore.removeToken();
+        this.props.AuthStore.removeToken();
         navigate("/login");
       })
       .catch((err) => {
@@ -28,7 +35,9 @@ function Logout({ navigate }) {
       });
   };
 
-  return <></>;
+  render() {
+    return <></>;
+  }
 }
 
-export default withRouter(Logout);
+export default withRouter(inject("AuthStore")(observer(Logout)));

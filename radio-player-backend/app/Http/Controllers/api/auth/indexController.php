@@ -81,33 +81,35 @@ class indexController extends BaseController
             ]);
         }
     }
-    public function check(Request $request){
-        $client=$request->user();
 
-        if($client){
-            $token=$client->createToken("radio")->accessToken;
+    public function check(Request $request)
+    {
+        $client = $request->user();
+
+        if ($client){
+            $token = $client->createToken("radio")->accessToken;
+
             return response()->json([
-                "success"=> true,
-                "isLoggedIn"=> true,
-                "data"=>[
-                    "id"=> $client->id,
-                    "name"=> $client->name,
-                    "email"=> $client->email,
-                    "url"=> $client->url,
-                    "channel"=> $client->channel,
-                    "token_type"=> "Bearer",
-                    "access_token"=> $token,
-                ]
+               "success" => true,
+               "isLoggedIn" => true,
+               "data" => [
+                   "id" => $client->id,
+                   "name" => $client->name,
+                   "email" => $client->email,
+                   "url" => $client->url,
+                   "channel" => $client->channel,
+                   "token_type" => "Bearer",
+                   "access_token" => $token
+               ]
             ]);
-
         }else{
             return response()->json([
-                "success"=>false,
-                "isLoggedIn"=>false,
+                "success" => false,
+                "isLoggedIn" => false
             ]);
         }
-
     }
+
 
     public function logout(Request $request){
         $client=$request->user();

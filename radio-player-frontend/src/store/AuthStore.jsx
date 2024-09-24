@@ -1,55 +1,55 @@
-import React, { useState } from "react";
 import cryptoJS from "crypto-js";
 import { jwtDecode } from "jwt-decode";
 import sign from "jwt-encode";
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, observable } from "mobx";
 
-const useAuthStore = () => {
-  const [appState, setAppState] = useState(null);
+class AuthStore {
+  appState = null;
 
-  const saveToken = (appState) => {
+  constructor() {
+    makeAutoObservable(this, {
+      appState: observable,
+      saveToken: action,
+      getToken: action,
+      removeToken: action,
+    });
+  }
+
+  saveToken = (appState) => {
     try {
-      const encryptedToken = cryptoJS.AES.encrypt(
-        sign(appState, "secret"),
-        "radio"
-      ).toString();
-      localStorage.setItem("appState", encryptedToken);
-      setAppState(appState);
-    } catch (error) {
-      console.log(error);
+      localStorage.setItem(
+        "appState",
+        cryptoJS.AES.encrypt(sign(appState, "secret"), "radio").toString()
+      );
+      this.appState = appState;
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  const getToken = () => {
+  getToken = () => {
     try {
       const appStateData = localStorage.getItem("appState");
       if (appStateData) {
         const bytes = cryptoJS.AES.decrypt(appStateData, "radio");
         const originalText = bytes.toString(cryptoJS.enc.Utf8);
-        setAppState(jwtDecode(originalText));
+        this.appState = jwtDecode(originalText);
+      } else {
+        this.appState = null;
       }
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  const removeToken = () => {
+  removeToken = () => {
     try {
       localStorage.removeItem("appState");
-      setAppState(null);
-    } catch (error) {
-      console.log(error);
+      this.appState = null;
+    } catch (e) {
+      console.log(e);
     }
   };
+}
 
-  makeAutoObservable({ appState, saveToken, getToken, removeToken });
-
-  return {
-    appState,
-    saveToken,
-    getToken,
-    removeToken,
-  };
-};
-
-export default useAuthStore;
+export default new AuthStore();
