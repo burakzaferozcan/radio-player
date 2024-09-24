@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Favourite from "../pages/Favourite";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Logout from "../pages/Logout";
 
 function AppRouter() {
   return (
@@ -12,6 +13,7 @@ function AppRouter() {
       <Route path="/favourite" element={<Favourite />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/logout" element={<Logout />} />
       <Route path="*" element={<Navigate to={"/"} />} />
     </Routes>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import withRouter from "../../withRouter";
-import { inject, observer } from "mobx-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import RestClient from "../../RestAPI/RestClient";
