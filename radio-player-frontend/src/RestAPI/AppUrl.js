@@ -11,6 +11,9 @@ class AppUrl {
 
   static home = this.apiURL + "/home";
   static set_favourite = this.apiURL + "/home/set-favourite";
+
+  static favourites = this.apiURL + "/favourites";
+  static remove_favourite = this.apiURL + "/favourites/remove-favourite";
 }
 
 export default AppUrl;
