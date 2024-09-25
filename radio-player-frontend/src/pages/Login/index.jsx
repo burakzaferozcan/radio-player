@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import RestClient from "../../RestAPI/RestClient";
 import AppUrl from "../../RestAPI/AppUrl";
 import Notification from "../../RestAPI/Notification";
+import { Helmet } from "react-helmet";
 
 class Login extends Component {
   constructor(props) {
@@ -67,6 +68,11 @@ class Login extends Component {
   render() {
     return (
       <>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Giriş Yap | mRadio</title>
+        </Helmet>
+
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-xl-8 col-lg-12 col-md-9">

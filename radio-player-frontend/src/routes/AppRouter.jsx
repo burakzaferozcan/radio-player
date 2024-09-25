@@ -75,6 +75,7 @@ class AppRouter extends Component {
           path={"/register"}
           element={isLoggedIn ? <Navigate to={"/"} /> : <Register />}
         ></Route>
+        <Route path={"*"} element={<Navigate to={"/"} />}></Route>
       </Routes>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
-import Favourite from "../pages/Favourite/index";
+import Favourite from "../pages/Favourite";
 import Logout from "../pages/Logout";
 
 export default class AuthRouter extends Component {

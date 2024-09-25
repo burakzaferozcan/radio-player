@@ -10,6 +10,8 @@ import AppUrl from "../../RestAPI/AppUrl";
 import Notification from "../../RestAPI/Notification";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+import { Helmet } from "react-helmet";
+import { BarsSpinner } from "react-spinners-kit";
 
 class Home extends Component {
   constructor(props) {
@@ -235,10 +237,10 @@ class Home extends Component {
   };
 
   radioRender = (data) => {
-    const { searchText } = this.state;
+    const { searchText, playUrl } = this.state;
 
     let newRadio = data.filter((item) => {
-      return item.rd_name.toLowerCase().match(searchText.toLowerCase());
+      return item.rd_name.match(searchText);
     });
 
     if (newRadio.length > 0) {
@@ -254,7 +256,12 @@ class Home extends Component {
                     </div>
                   </div>
                   <div className="col-auto">
-                    <i className="fas fa-play fa-2x text-gray-300"></i>
+                    <i
+                      onClick={() => this.play(item.rd_link, item.rd_name)}
+                      className={`fas ${
+                        playUrl === item.rd_link ? "fa-pause" : "fa-play"
+                      } fa-2x text-gray-300`}
+                    ></i>
                     <i
                       onClick={() => this.favourite(item.rd_id)}
                       className={`fas fa-heart ml-3 fa-2x ${
@@ -280,20 +287,25 @@ class Home extends Component {
   };
 
   render() {
-    const { isLoading, radios } = this.state;
+    const { isLoading, radios, playUrl, playChannel } = this.state;
 
     if (isLoading) {
       return (
         <div
           className={"d-flex justify-content-center align-items-center vh-100"}
         >
-          Yükleniyor...
+          <BarsSpinner size={30} color="#2250fc" loading={isLoading} />
         </div>
       );
     }
 
     return (
       <AuthLayout>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Anasayfa | mRadio</title>
+        </Helmet>
+
         <div id="wrapper">
           <Sidebar />
 
@@ -303,7 +315,21 @@ class Home extends Component {
 
               <div className="container-fluid">
                 <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                  <h1 className="h3 mb-0 text-gray-800">Radyo Listesi</h1>
+                  <h1 className="h3 mb-0 text-gray-800">
+                    Radyo Listesi
+                    {playUrl !== null && (
+                      <>
+                        <hr />
+                        <p>Oynatılan Kanal: {playChannel}</p>
+                        <button
+                          onClick={() => this.stop()}
+                          className={"btn btn-sm btn-danger"}
+                        >
+                          Kapat
+                        </button>
+                      </>
+                    )}
+                  </h1>
                 </div>
 
                 <div className="row">
@@ -316,13 +342,22 @@ class Home extends Component {
                       placeholder={"Radyo ismi giriniz..."}
                     />
                   </div>
-
                   {radios.length > 0 ? (
                     this.radioRender(radios)
                   ) : (
                     <div className={"alert alert-danger text-center"}>
                       Herhangi bir radyo kanalı bulunamadı
                     </div>
+                  )}
+
+                  {playUrl !== null && (
+                    <>
+                      <AudioPlayer
+                        autoPlay
+                        src={playUrl}
+                        showJumpControls={false}
+                      />
+                    </>
                   )}
                 </div>
               </div>
