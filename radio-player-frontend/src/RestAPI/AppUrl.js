@@ -10,7 +10,7 @@ class AppUrl {
   static check = this.apiURL + "/client/check";
 
   static home = this.apiURL + "/home";
-  static setFavourite = this.apiURL + "/home/set-favourite";
+  static set_favourite = this.apiURL + "/home/set-favourite";
 }
 
 export default AppUrl;

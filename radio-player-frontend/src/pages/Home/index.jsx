@@ -56,11 +56,58 @@ class Home extends Component {
       });
   };
 
+  favourite = (id) => {
+    const { radios } = this.state;
+
+    let newRadios = radios.map((item) => {
+      return item.rd_id === id
+        ? { ...item, isFavourite: !item.isFavourite }
+        : item;
+    });
+
+    this.setState(
+      {
+        radios: newRadios,
+      },
+      () => {
+        this.setFavourite(id);
+      }
+    );
+  };
+
+  setFavourite = (id) => {
+    this.props.AuthStore.getToken();
+    const token =
+      this.props.AuthStore.appState !== null
+        ? this.props.AuthStore.appState.user.access_token
+        : null;
+
+    RestClient.postRequest(
+      AppUrl.set_favourite,
+      {
+        fw_radio: id,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+        Notification.error({
+          title: "Hata",
+          message: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz",
+        });
+      });
+  };
+
   radioRender = (data) => {
     const { searchText } = this.state;
 
     let newRadio = data.filter((item) => {
-      return item.rd_name.toLowerCase().includes(searchText.toLowerCase());
+      return item.rd_name.match(searchText);
     });
 
     return newRadio.map((item, index) => {
@@ -76,7 +123,12 @@ class Home extends Component {
                 </div>
                 <div className="col-auto">
                   <i className="fas fa-play fa-2x text-gray-300"></i>
-                  <i className="fas fa-heart ml-3 fa-2x text-gray-300"></i>
+                  <i
+                    onClick={() => this.favourite(item.rd_id)}
+                    className={`fas fa-heart ml-3 fa-2x ${
+                      item.isFavourite ? "text-danger" : "text-gray-300"
+                    }`}
+                  ></i>
                 </div>
               </div>
             </div>
