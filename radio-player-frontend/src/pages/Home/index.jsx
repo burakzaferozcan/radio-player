@@ -8,15 +8,24 @@ import withRouter from "../../withRouter";
 import RestClient from "../../RestAPI/RestClient";
 import AppUrl from "../../RestAPI/AppUrl";
 import Notification from "../../RestAPI/Notification";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
+    const { user } =
+      this.props.AuthStore.appState !== null
+        ? this.props.AuthStore.appState
+        : {};
+
     this.state = {
       searchText: "",
       radios: [],
       isLoading: true,
+      playUrl: user.url,
+      playChannel: user.channel,
     };
   }
 
@@ -45,6 +54,128 @@ class Home extends Component {
             isLoading: false,
             radios: result.data,
           });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Notification.error({
+          title: "Hata",
+          message: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz",
+        });
+      });
+  };
+
+  play = (url, channel) => {
+    const { navigate } = this.props;
+    this.props.AuthStore.getToken();
+    const token =
+      this.props.AuthStore.appState !== null
+        ? this.props.AuthStore.appState.user.access_token
+        : null;
+
+    RestClient.postRequest(
+      AppUrl.update,
+      {
+        url: url,
+        channel: channel,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+      .then((res) => {
+        const result = res.data;
+
+        if (result.success === false) {
+          Notification.error(result);
+          navigate("/");
+        } else {
+          this.setState(
+            {
+              playUrl: url,
+              playChannel: channel,
+            },
+            () => {
+              let userData = {
+                id: result.data.id,
+                name: result.data.name,
+                email: result.data.email,
+                url: result.data.url,
+                channel: result.data.channel,
+                access_token: result.data.access_token,
+              };
+
+              let appState = {
+                isLoggedIn: true,
+                user: userData,
+              };
+
+              this.props.AuthStore.saveToken(appState);
+            }
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Notification.error({
+          title: "Hata",
+          message: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz",
+        });
+      });
+  };
+
+  stop = () => {
+    const { navigate } = this.props;
+    this.props.AuthStore.getToken();
+    const token =
+      this.props.AuthStore.appState !== null
+        ? this.props.AuthStore.appState.user.access_token
+        : null;
+
+    RestClient.postRequest(
+      AppUrl.update,
+      {
+        url: null,
+        channel: null,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+      .then((res) => {
+        const result = res.data;
+
+        if (result.success === false) {
+          Notification.error(result);
+          navigate("/");
+        } else {
+          this.setState(
+            {
+              playUrl: null,
+              playChannel: null,
+            },
+            () => {
+              let userData = {
+                id: result.data.id,
+                name: result.data.name,
+                email: result.data.email,
+                url: result.data.url,
+                channel: result.data.channel,
+                access_token: result.data.access_token,
+              };
+
+              let appState = {
+                isLoggedIn: true,
+                user: userData,
+              };
+
+              this.props.AuthStore.saveToken(appState);
+            }
+          );
         }
       })
       .catch((err) => {
